@@ -1,6 +1,6 @@
 import { BoardListItem } from "types/interface";
 
-const latestBoardListMock: BoardListItem[] = [
+const top3BoardListMock: BoardListItem[] = [
   {
     boardNumber: 0,
     title: "오늘은 일요일인데 마음이 갑갑하네",
@@ -37,8 +37,8 @@ const latestBoardListMock: BoardListItem[] = [
     viewCount: 0,
     writeDatetime: "2020-02-03 00:54:23",
     writeNickname: "안녕하세요, devhong",
-    boardTitleImage: "http://localhost:3000/img/img2.jpg",
+    boardTitleImage: null,
   },
 ];
 
-export default latestBoardListMock;
+export default top3BoardListMock;
