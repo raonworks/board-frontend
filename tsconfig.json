@@ -1,16 +1,8 @@
 {
   "compilerOptions": {
     "target": "es5",
-<<<<<<< HEAD
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-=======
     "baseUrl": "./src", // 추가됨
     "lib": ["dom", "dom.iterable", "esnext"],
->>>>>>> 98a360a (first commit)
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -25,11 +17,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-<<<<<<< HEAD
-  "include": [
-    "src"
-  ]
-=======
   "include": ["src"]
->>>>>>> 98a360a (first commit)
 }
