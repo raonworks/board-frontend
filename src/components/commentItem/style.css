@@ -1,0 +1,56 @@
+.comment-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.comment-item-list-top {
+  background-color: gray;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comment-item-list-profile-box {
+  width: 32px;
+  height: 32px;
+}
+
+.comment-item-list-profile-image {
+  background-color: red;
+  border-radius: 50% 50%;
+  width: 100%;
+  height: 100%;
+  background-position: 50%;
+  background-size: 100% 100%;
+}
+
+.comment-item-list-nickname {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+
+.comment-item-list-divider {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+
+.comment-item-list-time {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+
+.comment-item-list-nickname {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+
+.comment-item-list-content {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 150%;
+}
