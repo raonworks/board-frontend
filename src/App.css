@@ -1,3 +1,12 @@
+.icon-box {
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .icon-button {
   border-radius: 50% 50%;
   width: 24px;
@@ -30,4 +39,16 @@
 
 .expand-right-light-icon {
   background-image: url(assets/images/expand-right.png);
+}
+
+.logo-light-icon {
+  background-image: url(assets/images/springboot.png);
+}
+
+.insta-icon {
+  background-image: url(assets/images/insta.png);
+}
+
+.naver-blog-icon {
+  background-image: url(assets/images/naver.png);
 }
