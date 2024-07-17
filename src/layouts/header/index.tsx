@@ -1,7 +1,9 @@
 import "./style.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { MAIN_PATH, SEARCH_PATH } from "contants";
+import { AUTH_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from "contants";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useLoginUserStore } from "stores";
 
 export default function Header() {
   //로고를 클릭하면 메인으로 가도록 설정
@@ -9,6 +11,12 @@ export default function Header() {
   const onClickLogoHandler = () => {
     navigator(MAIN_PATH());
   };
+
+  const [cookie, setCookie] = useCookies();
+  const [isLogin, setLogin] = useState<boolean>(false);
+  const { loginUser, setLoginUser, resetLoginUser } = useLoginUserStore();
+
+  //검색 버튼
   const SearchButton = () => {
     const [status, setStatus] = useState<boolean>(false);
     const [searchWord, setSearchWord] = useState<string>("");
@@ -72,6 +80,47 @@ export default function Header() {
     );
   };
 
+  //로그인 버튼
+  const MyPageButton = () => {
+    const { email } = useParams();
+
+    //마이페이지 클릭 이벤트 핸들러
+    const onClickMyPageHandler = () => {
+      if (!loginUser) return;
+      const { email } = loginUser;
+      navigator(USER_PATH(email));
+    };
+
+    const onClickSignInHandler = () => {
+      navigator(AUTH_PATH());
+    };
+
+    const onClickSignOutHandler = () => {
+      resetLoginUser();
+      navigator(MAIN_PATH());
+    };
+
+    if (isLogin && loginUser?.email === email)
+      return (
+        <div className="white-button" onClick={onClickSignOutHandler}>
+          로그아웃
+        </div>
+      );
+
+    if (isLogin)
+      return (
+        <div className="white-button" onClick={onClickMyPageHandler}>
+          마이페이지
+        </div>
+      );
+
+    return (
+      <div className="black-button" onClick={onClickSignInHandler}>
+        로그인
+      </div>
+    );
+  };
+
   return (
     <>
       <div id="header">
@@ -84,6 +133,7 @@ export default function Header() {
           </div>
           <div className="header-right-box">
             <SearchButton />
+            <MyPageButton />
           </div>
         </div>
       </div>
