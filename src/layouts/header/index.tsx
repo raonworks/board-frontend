@@ -1,9 +1,18 @@
 import "./style.css";
-import { useNavigate, useParams } from "react-router-dom";
-import { AUTH_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from "contants";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  AUTH_PATH,
+  BOARD_DETAIL_PATH,
+  BOARD_UPDATE_PATH,
+  BOARD_WRITE_PATH,
+  MAIN_PATH,
+  SEARCH_PATH,
+  USER_PATH,
+} from "contants";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
-import { useLoginUserStore } from "stores";
+import { useBoardStore, useLoginUserStore } from "stores";
+import { BOARD_PATH } from "../../contants/index";
 
 export default function Header() {
   //로고를 클릭하면 메인으로 가도록 설정
@@ -15,6 +24,24 @@ export default function Header() {
   const [cookie, setCookie] = useCookies();
   const [isLogin, setLogin] = useState<boolean>(false);
   const { loginUser, setLoginUser, resetLoginUser } = useLoginUserStore();
+
+  //path 상태
+  const { pathname } = useLocation();
+  const isMainPage = pathname === MAIN_PATH();
+  const isAuthPage = pathname.startsWith(AUTH_PATH());
+  const isSearchPage = pathname.startsWith(SEARCH_PATH(""));
+  const isBoardDetailPage = pathname.startsWith(
+    BOARD_PATH() + "/" + BOARD_DETAIL_PATH("")
+  );
+  const isBoardWritePage = pathname.startsWith(
+    BOARD_PATH() + "/" + BOARD_WRITE_PATH()
+  );
+  const isBoardUpdatePage = pathname.startsWith(
+    BOARD_PATH() + "/" + BOARD_UPDATE_PATH("")
+  );
+  const isUserPage = pathname.startsWith(USER_PATH(""));
+
+  console.log(pathname);
 
   //검색 버튼
   const SearchButton = () => {
@@ -121,6 +148,20 @@ export default function Header() {
     );
   };
 
+  //업로드 버튼
+  const UploadButton = () => {
+    const { title, content, boardImageFileList, resetBoard } = useBoardStore();
+    const onUploadButtonClickHandler = () => {};
+
+    if (title && content)
+      return (
+        <div className="black-button" onClick={onUploadButtonClickHandler}>
+          업로드
+        </div>
+      );
+    return <div className="disable-button">업로드</div>;
+  };
+
   return (
     <>
       <div id="header">
@@ -132,8 +173,15 @@ export default function Header() {
             <div className="header-logo">SPRING&REACT</div>
           </div>
           <div className="header-right-box">
-            <SearchButton />
-            <MyPageButton />
+            {(isAuthPage ||
+              isMainPage ||
+              isSearchPage ||
+              isBoardDetailPage) && <SearchButton />}
+            {(isMainPage ||
+              isSearchPage ||
+              isBoardDetailPage ||
+              isUserPage) && <MyPageButton />}
+            {(isBoardWritePage || isBoardUpdatePage) && <UploadButton />}
           </div>
         </div>
       </div>
