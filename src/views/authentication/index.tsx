@@ -3,7 +3,7 @@ import "./style.css";
 import InputBox from "components/inputbox";
 
 export default function Authentication() {
-  // 화면 상태
+  //const 화면 상태 변수
   const [view, setView] = useState<"sign-in" | "sign-up">("sign-in");
 
   //# sign-In card 컴포넌트
@@ -26,10 +26,15 @@ export default function Authentication() {
     //const 에러 상태 변수
     const [error, setError] = useState<boolean>(false);
 
-    //handler 로그인 클릭 이벤트 핸들러
+    //handler "로그인" 클릭 이벤트 핸들러
     const onSignInButtonClickHandler = () => {};
 
-    //handler 비밀번호 클릭 이벤트 핸들러
+    //handler "회원가입" 클릭 이벤트 핸들러
+    const onSignUpClickHandler = () => {
+      setView("sign-up");
+    };
+
+    //handler "비밀번호" 클릭 이벤트 핸들러
     const onPasswordButtonClickHandler = () => {
       if (passwordType === "text") {
         setPasswordType("password");
@@ -40,14 +45,14 @@ export default function Authentication() {
       }
     };
 
-    //handler 이메일 키다운 이벤트 핸들러
+    //handler "이메일" 키다운 이벤트 핸들러
     const onEmailKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
       if (!passwordRef.current) return;
       passwordRef.current.focus();
     };
 
-    //handler 비밀번호 키다운 이벤트 핸들러
+    //handler "비밀번호" 키다운 이벤트 핸들러
     const onPasswordKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
       onSignInButtonClickHandler();
@@ -56,12 +61,12 @@ export default function Authentication() {
     return (
       <div className="auth-card">
         <div className="auth-card-box">
-          {/* //- 상단 부분 */}
+          {/* //div 상단 부분 */}
           <div className="auth-card-top">
             <div className="auth-card-title-box">
               <div className="auth-card-title">로그인</div>
             </div>
-            {/* //- 이메일 주소 입력 */}
+            {/* //element 이메일 주소 입력 */}
             <InputBox
               ref={emailRef}
               label="이메일 주소"
@@ -72,7 +77,7 @@ export default function Authentication() {
               setValue={setEmail}
               onKeyDown={onEmailKeyDownHandler}
             />
-            {/* //- 비밀번호 입력 */}
+            {/* //element 비밀번호 입력 */}
             <InputBox
               ref={passwordRef}
               label="비밀번호"
@@ -86,15 +91,17 @@ export default function Authentication() {
               onKeyDown={onPasswordKeyDownHandler}
             />
           </div>
-          {/* //- 하단 부분 */}
+          {/* //div 하단 부분 */}
           <div className="auth-card-bottom">
-            <div className="auth-sign-in-error-box">
-              <div className="auth-sign-in-error-message">
-                이메일 주소 또는 비밀번호를 잘못 입력했습니다.
-                <br />
-                입력하신 내용을 다시 확인해주세요.
+            {error && (
+              <div className="auth-sign-in-error-box">
+                <div className="auth-sign-in-error-message">
+                  이메일 주소 또는 비번을 잘못 입력했습니다.
+                  <br />
+                  입력하신 내용을 다시 확인해주세요.
+                </div>
               </div>
-            </div>
+            )}
             <div
               className="black-large-full-button"
               onClick={onSignInButtonClickHandler}
@@ -103,7 +110,10 @@ export default function Authentication() {
             </div>
             <div className="auth-desc-box">
               <div className="auth-desc">신규 사용자이신가요?</div>
-              <span className="auth-desc-link">회원가입</span>
+              {/* //element 회원가입 */}
+              <span className="auth-desc-link" onClick={onSignUpClickHandler}>
+                회원가입
+              </span>
             </div>
           </div>
         </div>
@@ -119,6 +129,7 @@ export default function Authentication() {
   return (
     <>
       <div id="auth-wrapper">
+        {/* //comment 그리드 레이아웃 */}
         <div className="auth-container">
           <div className="auth-jumbotron-box">
             <div className="auth-jumbotron-content">
