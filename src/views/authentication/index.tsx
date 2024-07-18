@@ -10,19 +10,26 @@ export default function Authentication() {
   const SignInCard = () => {
     const emailRef = useRef<HTMLInputElement | null>(null);
     const passwordRef = useRef<HTMLInputElement | null>(null);
+
+    //const 이메일 상태 변수
     const [email, setEmail] = useState<string>("");
+    //const 비밀번호 상태 변수
     const [password, setPassword] = useState<string>("");
+    //const 비밀번호 타입 상태 변수
     const [passwordType, setPasswordType] = useState<"text" | "password">(
       "password"
     );
+    //const 비밀번호 버튼 아이콘 상태 변수
     const [passwordButtonIcon, setPasswordButtonIcon] = useState<
       "eye-light-off-icon" | "eye-light-on-icon"
     >("eye-light-off-icon");
+    //const 에러 상태 변수
     const [error, setError] = useState<boolean>(false);
 
-    //- 이벤트 핸들러
+    //handler 로그인 클릭 이벤트 핸들러
     const onSignInButtonClickHandler = () => {};
 
+    //handler 비밀번호 클릭 이벤트 핸들러
     const onPasswordButtonClickHandler = () => {
       if (passwordType === "text") {
         setPasswordType("password");
@@ -33,12 +40,14 @@ export default function Authentication() {
       }
     };
 
+    //handler 이메일 키다운 이벤트 핸들러
     const onEmailKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
       if (!passwordRef.current) return;
       passwordRef.current.focus();
     };
 
+    //handler 비밀번호 키다운 이벤트 핸들러
     const onPasswordKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
       onSignInButtonClickHandler();

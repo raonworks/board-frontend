@@ -21,11 +21,13 @@ const InputBox = forwardRef<HTMLInputElement, PropsType>(
     const { setValue } = props;
     const { onButtonClick, onKeyDown } = props;
 
+    //handler 값 변경에 대한 이벤트 핸들러
     const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       setValue(value);
     };
 
+    //handler 키 다운에 대한 이벤트 핸들러
     const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
       if (!onKeyDown) return;
       onKeyDown(e);
