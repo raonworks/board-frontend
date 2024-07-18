@@ -1,2 +1,3 @@
 import SignUpResponseDTO from "./sign-up.response.dto";
-export type { SignUpResponseDTO };
+import SignInResponseDTO from "./sign-in.reponse.dto";
+export type { SignUpResponseDTO, SignInResponseDTO };

@@ -9,8 +9,9 @@ interface PropsType {
   error: boolean;
   icon?: "eye-light-off-icon" | "eye-light-on-icon" | "expand-right-light-icon";
   message?: string;
-  //setValue: React.Dispatch<React.SetStateAction<string>>;
-  setValue: (value: string) => void;
+  // setValue: React.Dispatch<React.SetStateAction<string>>;
+  // setValue: (value: string) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onButtonClick?: () => void;
   onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void;
 }
@@ -18,14 +19,8 @@ interface PropsType {
 const InputBox = forwardRef<HTMLInputElement, PropsType>(
   (props: PropsType, ref) => {
     const { label, type, placeholder, value, error, icon, message } = props;
-    const { setValue } = props;
+    const { onChange } = props;
     const { onButtonClick, onKeyDown } = props;
-
-    //handler 값 변경에 대한 이벤트 핸들러
-    const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      setValue(value);
-    };
 
     //handler 키 다운에 대한 이벤트 핸들러
     const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -48,7 +43,7 @@ const InputBox = forwardRef<HTMLInputElement, PropsType>(
               placeholder={placeholder}
               value={value}
               className="input"
-              onChange={onChangeHandler}
+              onChange={onChange}
               onKeyDown={onKeyDownHandler}
             />
             {onButtonClick !== undefined && (
