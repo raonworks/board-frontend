@@ -1,0 +1,60 @@
+#auth-wrapper {
+  padding: 100px 0 150px;
+  min-width: 800px;
+  min-height: 600px;
+  height: calc(100vh - 68px - 100px - 150px);
+  display: flex;
+  justify-content: center; /* 세로 정렬 */
+  align-items: center; /* 가로 정렬 */
+  background-image: url(assets/auth-bg.jpg);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: auto;
+}
+
+.auth-container {
+  width: 800px;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  column-gap: 78px;
+}
+
+.auth-jumbotron-box {
+  grid-column: 1/2;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-jumbotron-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.auth-logo-icon {
+  width: 50px;
+  height: 50px;
+  background-image: url(../../assets/images/springboot.png);
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+}
+
+.auth-jumbotron-text-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.auth-jumbotron-text {
+  color: black;
+  font-family: GimhaeGaya;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: -1.2px;
+}

@@ -7,7 +7,7 @@ interface PropsType {
   placeholder: string;
   value: string;
   error: boolean;
-  icon?: string;
+  icon?: "eye-light-off-icon" | "eye-light-on-icon" | "expand-right-light-icon";
   message?: string;
   //setValue: React.Dispatch<React.SetStateAction<string>>;
   setValue: (value: string) => void;
@@ -50,7 +50,7 @@ const InputBox = forwardRef<HTMLInputElement, PropsType>(
               onKeyDown={onKeyDownHandler}
             />
             {onButtonClick !== undefined && (
-              <div className="icon-button">
+              <div className="icon-button" onClick={onButtonClick}>
                 {icon !== undefined && <div className={`icon ${icon}`}></div>}
               </div>
             )}
