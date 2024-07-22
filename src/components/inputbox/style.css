@@ -41,3 +41,34 @@
   font-weight: 400;
   line-height: 140%;
 }
+
+.auth-consent-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.auth-check-box {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.auth-consent-title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+.auth-consent-title-error {
+  color: red;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+.auth-consent-link {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 140%;
+}

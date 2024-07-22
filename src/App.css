@@ -56,3 +56,11 @@
 .search-light-icon {
   background-image: url(assets/images/search.png);
 }
+
+.check-round-fill-icon {
+  background-image: url(assets/images/checkbox-2.png);
+}
+
+.check-ring-light-icon {
+  background-image: url(assets/images/checkbox-1.png);
+}

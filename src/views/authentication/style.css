@@ -131,6 +131,7 @@
 .auth-desc-box {
   display: flex;
   justify-content: center;
+  cursor: pointer;
 }
 
 .auth-desc {
@@ -143,4 +144,10 @@
 .auth-desc-link {
   color: black;
   font-weight: 600;
+}
+
+.auth-card-page {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 140%;
 }
