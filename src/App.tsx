@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Main from "views/main";
 import Authentication from "views/authentication";
 import Search from "views/search";
-import User from "views/user";
+import UserFoo from "views/user";
 import BoardDetail from "views/board/detail";
 import BoardWrite from "views/board/write";
 import BoardUpdate from "views/board/update";
@@ -17,6 +17,13 @@ import {
   USER_PATH,
   BOARD_UPDATE_PATH,
 } from "contants";
+import { useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { useLoginUserStore } from "stores";
+import { getSignInUserRequest } from "apis";
+import { GetSignInUserResponseDTO } from "apis/response/user";
+import { ResponseDTO } from "apis/response";
+import { User } from "types/interface";
 
 /*
   메인화면: /
@@ -29,6 +36,35 @@ import {
 */
 
 function App() {
+  //const 쿠키 값
+  const [cookies, setCookie] = useCookies();
+  //const 로그인 유저(전역 상태 관리자)
+  const { setLoginUser, resetLoginUser } = useLoginUserStore();
+  //function 사용자 정보 받아오는 함수
+  const getSignInUserResponse = (
+    resBody: GetSignInUserResponseDTO | ResponseDTO | null
+  ) => {
+    if (!resBody) return;
+
+    const { code } = resBody;
+    if (code === "AF" || code === "NU" || code === "DBE") {
+      resetLoginUser();
+      return;
+    }
+
+    const loginUser: User = { ...(resBody as GetSignInUserResponseDTO) };
+    setLoginUser(loginUser);
+  };
+
+  //# 엑세스 토큰 값이 바뀔 때마다 실행.
+  useEffect(() => {
+    if (!cookies.accessToken) {
+      resetLoginUser();
+      return;
+    }
+    getSignInUserRequest(cookies.accessToken).then(getSignInUserResponse);
+  }, [cookies.accessToken]);
+
   return (
     <>
       <Routes>
@@ -36,7 +72,7 @@ function App() {
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={AUTH_PATH()} element={<Authentication />} />
           <Route path={SEARCH_PATH(":word")} element={<Search />} />
-          <Route path={USER_PATH(":email")} element={<User />} />
+          <Route path={USER_PATH(":email")} element={<UserFoo />} />
           <Route path={BOARD_PATH()}>
             <Route path={BOARD_WRITE_PATH()} element={<BoardWrite />} />
             <Route

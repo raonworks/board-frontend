@@ -41,7 +41,7 @@ export default function Header() {
   );
   const isUserPage = pathname.startsWith(USER_PATH(""));
 
-  console.log(pathname);
+  // console.log(pathname);
 
   //검색 버튼
   const SearchButton = () => {
@@ -78,6 +78,12 @@ export default function Header() {
         setStatus(true);
       }
     }, [word]);
+
+    useEffect(() => {}, []);
+
+    useEffect(() => {
+      setLogin(loginUser !== null);
+    }, []);
 
     if (!status)
       return (
@@ -124,6 +130,7 @@ export default function Header() {
 
     const onClickSignOutHandler = () => {
       resetLoginUser();
+      setCookie("accessToken", "", { path: MAIN_PATH(), expires: new Date() });
       navigator(MAIN_PATH());
     };
 
