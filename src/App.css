@@ -1,3 +1,8 @@
+.divider {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
 .icon-box {
   width: 24px;
   height: 24px;
@@ -63,4 +68,34 @@
 
 .check-ring-light-icon {
   background-image: url(assets/images/checkbox-1.png);
+}
+
+.image-box-light-icon {
+  background-image: url(assets/images/image-file.png);
+}
+
+.close-icon {
+  background-image: url(assets/images/close.png);
+}
+
+.board-write-images-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.board-write-image-box {
+  position: relative;
+  width: 100%;
+}
+
+.board-write-image {
+  width: 100%;
+}
+
+.image-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
