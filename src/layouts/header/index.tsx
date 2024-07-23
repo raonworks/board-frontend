@@ -13,6 +13,10 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useBoardStore, useLoginUserStore } from "stores";
 import { BOARD_PATH } from "../../contants/index";
+import { fileUploadRequest, postBoardRequest } from "apis";
+import { PostBoardRequestDTO } from "apis/request/board";
+import { PostBoardResponseDTO } from "apis/response/board";
+import { ResponseDTO } from "apis/response";
 
 export default function Header() {
   //로고를 클릭하면 메인으로 가도록 설정
@@ -155,10 +159,50 @@ export default function Header() {
     );
   };
 
-  //업로드 버튼
+  //#업로드 버튼
   const UploadButton = () => {
     const { title, content, boardImageFileList, resetBoard } = useBoardStore();
-    const onUploadButtonClickHandler = () => {};
+
+    //function
+    const postBoardResponse = (
+      res: PostBoardResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "AF" || code === "NU") navigator(AUTH_PATH());
+      if (code === "VF") alert("제목과 내용은 필수입니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") return;
+
+      resetBoard();
+      if (!loginUser) return;
+      const { email } = loginUser;
+      navigator(USER_PATH(email));
+    };
+
+    //function 업로드 버튼 클릭 이벤트
+    const onUploadButtonClickHandler = async () => {
+      const accessToken = cookie.accessToken;
+      if (!accessToken) return;
+
+      //comment 파일 업로드
+      const boardImageList: string[] = [];
+      for (const file of boardImageFileList) {
+        const data = new FormData();
+        data.append("file", file);
+        const url = await fileUploadRequest(data);
+        if (url) boardImageList.push(url);
+      }
+
+      //게시물 정보 등록
+      const req: PostBoardRequestDTO = {
+        title,
+        content,
+        boardImageList,
+      };
+      postBoardRequest(req, accessToken).then(postBoardResponse);
+    };
 
     if (title && content)
       return (

@@ -1,6 +1,9 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
 import "./style.css";
-import { useBoardStore } from "stores";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useBoardStore, useLoginUserStore } from "stores";
+import { useNavigate } from "react-router-dom";
+import { MAIN_PATH } from "contants";
+import { useCookies } from "react-cookie";
 
 export default function BoardWrite() {
   //const 타이틀 영역 REF
@@ -9,6 +12,10 @@ export default function BoardWrite() {
   const contentRef = useRef<HTMLTextAreaElement | null>(null);
   //const 파일 REF
   const imageInputRef = useRef<HTMLInputElement | null>(null);
+  //const 로그인 유저 상태
+  const { loginUser } = useLoginUserStore();
+  //const 쿠키 상태
+  const [cookies, setCookie] = useCookies();
   //const 게시물 상태
   const { title, setTitle } = useBoardStore();
   const { content, setContent } = useBoardStore();
@@ -74,7 +81,12 @@ export default function BoardWrite() {
     //todo 제거한 이미지 blob은 URL.revokeObjectURL(url)을 이용해서 해제해야 함.
   };
 
+  //function 네비게이션
+  const navigator = useNavigate();
+
   useEffect(() => {
+    const { accessToken } = cookies;
+    if (!accessToken) navigator(MAIN_PATH());
     resetBoard();
   }, []);
 
