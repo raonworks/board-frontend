@@ -99,3 +99,32 @@
   top: 20px;
   right: 20px;
 }
+
+.more-icon {
+  background-image: url(assets/images/more.png);
+  transform: rotate(90deg);
+}
+
+.favorite-fill-icon {
+  background-image: url(assets/images/favorite_fill.png);
+}
+
+.favorite-light-icon {
+  background-image: url(assets/images/favorite_outline.png);
+}
+
+.up-light-icon {
+  background-image: url(assets/images/arrow-up.png);
+}
+
+.down-light-icon {
+  background-image: url(assets/images/arrow_down.png);
+}
+
+.comment-icon {
+  background-image: url(assets/images/comment.png);
+}
+
+.emphasis {
+  font-weight: bolder;
+}

@@ -7,7 +7,7 @@ interface propsType {
 }
 
 export default function FavoriteItem({ favoriteListItem }: propsType) {
-  const { nickname, profileImage } = favoriteListItem;
+  const { email, nickname, profileImage } = favoriteListItem;
   return (
     <>
       <div className="favorite-item-list">

@@ -16,6 +16,7 @@ import {
   SEARCH_PATH,
   USER_PATH,
   BOARD_UPDATE_PATH,
+  BOARD_DETAIL_PATH,
 } from "contants";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
@@ -76,7 +77,7 @@ function App() {
           <Route path={BOARD_PATH()}>
             <Route path={BOARD_WRITE_PATH()} element={<BoardWrite />} />
             <Route
-              path={BOARD_UPDATE_PATH(":boardNumber")}
+              path={BOARD_DETAIL_PATH(":boardNumber")}
               element={<BoardDetail />}
             />
             <Route
