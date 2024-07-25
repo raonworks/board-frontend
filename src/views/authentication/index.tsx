@@ -1,5 +1,5 @@
-import { useState, KeyboardEvent, useRef, ChangeEvent, useEffect } from "react";
 import "./style.css";
+import { useState, KeyboardEvent, useRef, ChangeEvent, useEffect } from "react";
 import InputBox from "components/inputbox";
 import { SignInRequestDTO, SignUpRequestDTO } from "apis/request/auth";
 import { signInRequest, signUpRequest } from "apis";
