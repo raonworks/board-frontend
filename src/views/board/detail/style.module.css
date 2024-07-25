@@ -1,12 +1,195 @@
-.Box {
-  background-color: orange;
-  color: yellow;
+.wrapper {
+  padding: 100px 0;
+  display: flex;
+  justify-content: center;
 }
-.Foo {
-  color: yellow;
-  font-size: 40px;
-  background-color: blue;
+.container {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-.Star {
-  color: beige;
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.top-header {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 140%;
+}
+.top-sub-box {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.write-info-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.writer-profile-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-position: 50% 50%;
+  background-size: 100% 100%;
+}
+.writer-nickname {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+  cursor: pointer;
+}
+.divider,
+.write-date {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 140%;
+}
+.more-box {
+  background-color: white;
+  position: absolute;
+  right: 0;
+  top: -80px;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.25);
+}
+.update-button {
+  width: 143px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.delete-button {
+  width: 143px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 0, 0, 0.5);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.update-button:hover,
+.delete-button:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.top-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.top-main-text {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 150%;
+  /* 줄바꿈 처리  */
+  white-space: pre-wrap;
+}
+.main-image {
+  width: 100%;
+}
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bottom-button-box {
+  display: flex;
+  gap: 12px;
+}
+.bottom-button-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bottom-button-text {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.bottom-favorite-box {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 20px 20px 40px;
+}
+.bottom-favorite-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bottom-favorite-title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.bottom-favorite-contents {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 30px;
+  row-gap: 20px;
+}
+.bottom-comment-box {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bottom-comment-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 20px;
+}
+.bottom-comment-title {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.bottom-comment-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.bottom-comment-pagination-box {
+  display: flex;
+  justify-content: center;
+}
+.bottom-comment-input-box {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+.bottom-comment-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bottom-comment-textarea {
+  border: none;
+  outline: none;
+  background: none;
+  resize: none;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 150%;
+}
+.bottom-comment-button-box {
+  display: flex;
+  justify-content: flex-end;
 }

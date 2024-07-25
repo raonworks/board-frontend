@@ -1,4 +1,3 @@
-import "./style.css";
 import styles from "./style.module.css";
 import FavoriteItem from "components/favoriteItem";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -10,10 +9,11 @@ import EmptyProfileImage from "assets/images/empty_profile.jpg";
 import { useLoginUserStore } from "stores";
 import { useNavigate, useParams } from "react-router-dom";
 import { BOARD_PATH, BOARD_UPDATE_PATH, USER_PATH } from "contants";
-import classNames from "classnames";
-import { v4 as uuidv4 } from "uuid";
+import classNames from "classnames/bind";
 
 export default function BoardDetail() {
+  const cx = classNames.bind(styles);
+
   //const 게시물 번호
   const { boardNumner } = useParams();
   //const 로그인 유저 상태
@@ -59,16 +59,16 @@ export default function BoardDetail() {
     }, [boardNumner]);
 
     return (
-      <div className="board-detail-top">
+      <div className={cx("top")}>
         {/* //div 타이틀 및 작성자 정보 */}
-        <div className="board-detail-top-header">
+        <div className={cx("top-header")}>
           {/* //div 타이틀 */}
-          <div className="board-detail-title">{board?.title}</div>
+          <div className={cx("title")}>{board?.title}</div>
           {/* //div comment 작성자 정보 */}
-          <div className="board-detail-top-sub-box">
-            <div className="board-detail-write-info-box">
+          <div className={cx("top-sub-box")}>
+            <div className={cx("write-info-box")}>
               <div
-                className="board-detail-writer-profile-image"
+                className={cx("writer-profile-image")}
                 style={{
                   backgroundImage: `url(${
                     board?.writerProfileImage
@@ -78,14 +78,14 @@ export default function BoardDetail() {
                 }}
               ></div>
               <div
-                className="board-detail-writer-nickname"
+                className={cx("writer-nickname")}
                 onClick={onNicknameClickHandler}
               >
                 {/* //comment 닉네임 */}
                 {board?.writerNickname}
               </div>
-              <div className="board-detail-info-divider">|</div>
-              <div className="board-detail-write-date">
+              <div className={cx("divider")}>|</div>
+              <div className={cx("write-date")}>
                 {/* //comment 글쓴날짜 */}
                 {board?.writeDatetime}
               </div>
@@ -96,16 +96,16 @@ export default function BoardDetail() {
             {showMore && (
               <>
                 {/* //div 더보기 박스 */}
-                <div className="board-detail-more-box">
+                <div className={cx("more-box")}>
                   <div
-                    className="board-detail-update-button"
+                    className={cx("update-button")}
                     onClick={onUpdateButtonClickHandler}
                   >
                     수정
                   </div>
                   <div className="divider"></div>
                   <div
-                    className="board-detail-delete-button"
+                    className={cx("delete-button")}
                     onClick={onDeleteButtonClickHandler}
                   >
                     삭제
@@ -117,15 +117,10 @@ export default function BoardDetail() {
         </div>
         <div className="divider"></div>
         {/* //div 본문 및 이미지 */}
-        <div className="board-detail-top-main">
-          <div className="board-detail-main-text">{board?.content}</div>
-          {board?.boardImageList.map((item) => (
-            <img
-              key={uuidv4()}
-              className="board-detail-main-image"
-              alt=""
-              src={item}
-            />
+        <div className={cx("top-main")}>
+          <div className={cx("top-main-text")}>{board?.content}</div>
+          {board?.boardImageList.map((item, idx) => (
+            <img key={idx} className={cx("main-image")} alt="" src={item} />
           ))}
         </div>
       </div>
@@ -184,44 +179,48 @@ export default function BoardDetail() {
       setCommentList(commentItemListMock);
     }, []);
 
-    //동적 아이콘 클래스 정의
-    const favoriteIcon = classNames("icon", {
+    //"좋아요" 펼치기 아이콘
+    const favoriteIcon = cx("icon", {
       "up-light-icon": showFavorite,
       "down-light-icon": !showFavorite,
     });
-    const commentIcon = classNames("icon", {
+    //"좋아요" 선택 아이콘
+    const hitFavorite = cx("icon", {
+      "favorite-fill-icon": isFavorite,
+      "favorite-light-icon": !isFavorite,
+    });
+
+    //"댓글" 펼치기 아이콘
+    const commentIcon = cx("icon", {
       "up-light-icon": showComment,
       "down-light-icon": !showComment,
     });
-    const commentButton = classNames({
+    //"댓글달기" 아이콘
+    const commentButton = cx({
       "disable-button": comment.length === 0,
       "black-button": comment.length >= 0,
     });
 
     return (
-      <div id="board-detail-bottom">
+      <div id="bottom" className={cx("bottom")}>
         {/* //div 버튼 모음 박스 */}
-        <div className="board-detail-bottom-button-box">
-          <div className="board-detail-bottom-button-group">
+        <div className={cx("bottom-button-box")}>
+          <div className={cx("bottom-button-group")}>
             <div className="icon-button" onClick={onFavoriteClickHandler}>
-              {isFavorite ? (
-                <div className="icon favorite-fill-icon" />
-              ) : (
-                <div className="icon favorite-light-icon" />
-              )}
+              <div className={hitFavorite} />
             </div>
-            <div className="board-detail-bottom-button-text">
+            <div className={cx("bottom-button-text")}>
               좋아요 {favoriteList.length}
             </div>
             <div className="icon-button" onClick={onShowFavoriteClickHandler}>
               <div className={favoriteIcon}></div>
             </div>
           </div>
-          <div className="board-detail-bottom-button-group">
+          <div className={cx("bottom-button-group")}>
             <div className="icon-button">
               <div className="icon comment-icon"></div>
             </div>
-            <div className="board-detail-bottom-button-text">
+            <div className={cx("bottom-button-text")}>
               댓글 {commentList.length}
             </div>
             <div className="icon-button" onClick={onShowCommentClickHandler}>
@@ -231,14 +230,14 @@ export default function BoardDetail() {
         </div>
         {/* //div "좋아요" 박스 */}
         {showFavorite && (
-          <div className="board-detail-bottom-favorite-box">
-            <div className="board-detail-bottom-favorite-container">
-              <div className="board-detail-bottom-favorite-title">
+          <div className={cx("bottom-favorite-box")}>
+            <div className={cx("bottom-favorite-container")}>
+              <div className={cx("bottom-favorite-title")}>
                 좋아요 <span className="emphasis">{favoriteList.length}</span>
               </div>
-              <div className="board-detail-bottom-favorite-contents">
-                {favoriteList.map((item) => (
-                  <FavoriteItem key={uuidv4()} favoriteListItem={item} />
+              <div className={cx("bottom-favorite-contents")}>
+                {favoriteList.map((item, idx) => (
+                  <FavoriteItem key={idx} favoriteListItem={item} />
                 ))}
               </div>
             </div>
@@ -246,33 +245,33 @@ export default function BoardDetail() {
         )}
         {/* //div 댓글 박스 */}
         {showComment && (
-          <div className="board-detail-bottom-comment-box">
-            <div className="board-detail-bottom-comment-container">
-              <div className="board-detail-bottom-comment-title">
+          <div className={cx("bottom-comment-box")}>
+            <div className={cx("bottom-comment-container")}>
+              <div className={cx("bottom-comment-title")}>
                 댓글 <span className="emphasis">{commentList.length}</span>
               </div>
-              <div className="board-detail-bottom-comment-list-container">
-                {commentList.map((item) => (
-                  <CommentItem key={uuidv4()} commentItemList={item} />
+              <div className={cx("bottom-comment-list-container")}>
+                {commentList.map((item, idx) => (
+                  <CommentItem key={idx} commentItemList={item} />
                 ))}
               </div>
             </div>
             <div className="divider"></div>
             {/* //div 페이지 네이션 박스 */}
-            <div className="board-detail-bottom-comment-pagination-box">
+            <div className={cx("bottom-comment-pagination-box")}>
               <Pagination />
             </div>
             {/* //div 댓글 입력 폼 */}
-            <div className="board-detail-bottom-comment-input-box">
-              <div className="board-detail-bottom-comment-input-container">
+            <div className={cx("bottom-comment-input-box")}>
+              <div className={cx("bottom-comment-input-container")}>
                 <textarea
                   ref={commentRef}
-                  className="board-detail-bottom-comment-textarea"
+                  className={cx("bottom-comment-textarea")}
                   value={comment}
                   placeholder="댓글을 작성해주세요."
                   onChange={onChangeCommentClickHandler}
                 />
-                <div className="board-detail-bottom-comment-button-box">
+                <div className={cx("bottom-comment-button-box")}>
                   <div
                     className={commentButton}
                     onClick={onCommentSubmitClickHandler}
@@ -290,8 +289,8 @@ export default function BoardDetail() {
 
   return (
     <>
-      <div id="board-detail-wrapper">
-        <div className="board-detail-container">
+      <div id="wrapper" className={cx("wrapper")}>
+        <div className={cx("container")}>
           <BoardDetailTop />
           <BoardDetailBottom />
         </div>
