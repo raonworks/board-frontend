@@ -25,6 +25,7 @@ import { getSignInUserRequest } from "apis";
 import { GetSignInUserResponseDTO } from "apis/response/user";
 import { ResponseDTO } from "apis/response";
 import { User } from "types/interface";
+import TestView from "views/test";
 
 /*
   메인화면: /
@@ -69,6 +70,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path="/tmp" element={<TestView />} />
         <Route element={<Container />}>
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={AUTH_PATH()} element={<Authentication />} />

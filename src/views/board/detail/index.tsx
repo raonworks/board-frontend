@@ -2,7 +2,7 @@ import styles from "./style.module.css";
 import FavoriteItem from "components/favoriteItem";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Board, CommentListItem, FavoriteLiteItem } from "types/interface";
-import { boardMock, commentItemListMock, favoriteListMock } from "mocks";
+import { commentItemListMock, favoriteListMock } from "mocks";
 import CommentItem from "components/commentItem";
 import Pagination from "components/pagination";
 import EmptyProfileImage from "assets/images/empty_profile.jpg";
@@ -10,10 +10,21 @@ import { useLoginUserStore } from "stores";
 import { useNavigate, useParams } from "react-router-dom";
 import { BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from "contants";
 import classNames from "classnames/bind";
-import { getBoardRequest, increaseViewCountRequst } from "apis";
+import {
+  getBoardRequest,
+  getCommentListRequest,
+  getFavoriteListRequest,
+  increaseViewCountRequst,
+} from "apis";
 import GetBoardResponseDTO from "apis/response/board/get-board.response.dto";
 import { ResponseDTO } from "apis/response";
-import { IncreaseViewCountResponseDTO } from "apis/response/board";
+import {
+  GetCommentListResponseDTO,
+  GetFavoriteListResponseDTO,
+  IncreaseViewCountResponseDTO,
+} from "apis/response/board";
+import dayjs from "dayjs";
+import _ from "lodash";
 
 export default function BoardDetail() {
   const cx = classNames.bind(styles);
@@ -26,7 +37,7 @@ export default function BoardDetail() {
   //hook 네비게이터
   const navigator = useNavigate();
 
-  //function
+  //function 조회 응답 함수
   const increaseViewCountResponse = (
     res: IncreaseViewCountResponseDTO | ResponseDTO | null | undefined
   ) => {
@@ -90,6 +101,12 @@ export default function BoardDetail() {
 
       setWriter(loginUser.email === board.writerEmail);
     };
+    //function 작성일 변경 포멧 함수
+    const getWriteDatetimeFormat = () => {
+      if (!board) return null;
+      const date = dayjs(board.writeDatetime);
+      return date.format("YYYY. MM. DD");
+    };
 
     //comment 게시물 정보가 없으면 빈화면 출력
     // if (null === board) return <></>;
@@ -131,7 +148,7 @@ export default function BoardDetail() {
               <div className={cx("divider")}>|</div>
               <div className={cx("write-date")}>
                 {/* //comment 글쓴날짜 */}
-                {board?.writeDatetime}
+                {getWriteDatetimeFormat()}
               </div>
             </div>
             {isWriter && (
@@ -216,13 +233,51 @@ export default function BoardDetail() {
       alert("!!");
     };
 
+    //function "좋아요" 응답 함수
+    const getFavoriteResponse = (
+      res: GetFavoriteListResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return null;
+
+      const { code } = res;
+      if (code === "NB") alert("존재하지 않는 게시물입니다.");
+      if (code === "DBE") alert("데이터베이스 입니다.");
+      if (code !== "SU") return;
+
+      const { favoriteList } = res as GetFavoriteListResponseDTO;
+      setFavoriteList(favoriteList);
+
+      if (!loginUser) {
+        setFavorite(false);
+        return;
+      }
+
+      const hitedFavorite =
+        _.findIndex(favoriteList, { email: loginUser.email }) !== -1;
+      setFavorite(hitedFavorite);
+    };
+    //function "댓글" 응답 함수
+    const getCommentResponse = (
+      res: GetCommentListResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+      const { code } = res;
+      if (code === "NB") alert("존재하지 않는 게시물입니다.");
+      if (code === "DBE") alert("데이터베이스 입니다.");
+      if (code !== "SU") return;
+
+      const { commentList } = res as GetCommentListResponseDTO;
+      setCommentList(commentList);
+    };
+
     //hook 댓글 textarea 참조
     const commentRef = useRef<HTMLTextAreaElement | null>(null);
 
     //hook 초기화 작업
     useEffect(() => {
-      setFavoriteList(favoriteListMock);
-      setCommentList(commentItemListMock);
+      if (!boardNumber) return;
+      getFavoriteListRequest(boardNumber).then(getFavoriteResponse);
+      getCommentListRequest(boardNumber).then(getCommentResponse);
     }, []);
 
     //"좋아요" 펼치기 아이콘
@@ -308,25 +363,27 @@ export default function BoardDetail() {
               <Pagination />
             </div>
             {/* //div 댓글 입력 폼 */}
-            <div className={cx("bottom-comment-input-box")}>
-              <div className={cx("bottom-comment-input-container")}>
-                <textarea
-                  ref={commentRef}
-                  className={cx("bottom-comment-textarea")}
-                  value={comment}
-                  placeholder="댓글을 작성해주세요."
-                  onChange={onChangeCommentClickHandler}
-                />
-                <div className={cx("bottom-comment-button-box")}>
-                  <div
-                    className={commentButton}
-                    onClick={onCommentSubmitClickHandler}
-                  >
-                    댓글달기
+            {null != loginUser && (
+              <div className={cx("bottom-comment-input-box")}>
+                <div className={cx("bottom-comment-input-container")}>
+                  <textarea
+                    ref={commentRef}
+                    className={cx("bottom-comment-textarea")}
+                    value={comment}
+                    placeholder="댓글을 작성해주세요."
+                    onChange={onChangeCommentClickHandler}
+                  />
+                  <div className={cx("bottom-comment-button-box")}>
+                    <div
+                      className={commentButton}
+                      onClick={onCommentSubmitClickHandler}
+                    >
+                      댓글달기
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>
