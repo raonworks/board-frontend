@@ -2,7 +2,6 @@ import styles from "./style.module.css";
 import FavoriteItem from "components/favoriteItem";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Board, CommentListItem, FavoriteLiteItem } from "types/interface";
-import { commentItemListMock, favoriteListMock } from "mocks";
 import CommentItem from "components/commentItem";
 import Pagination from "components/pagination";
 import EmptyProfileImage from "assets/images/empty_profile.jpg";
@@ -11,20 +10,29 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from "contants";
 import classNames from "classnames/bind";
 import {
+  deleteBoardRequest,
   getBoardRequest,
   getCommentListRequest,
   getFavoriteListRequest,
   increaseViewCountRequst,
+  postCommentRequest,
+  putFavoriteRequest,
 } from "apis";
 import GetBoardResponseDTO from "apis/response/board/get-board.response.dto";
 import { ResponseDTO } from "apis/response";
 import {
+  DeleteBoardResponseDTO,
   GetCommentListResponseDTO,
   GetFavoriteListResponseDTO,
   IncreaseViewCountResponseDTO,
+  PostCommentResponseDTO,
+  PutFavoriteResponseDTO,
 } from "apis/response/board";
 import dayjs from "dayjs";
 import _ from "lodash";
+//// import { useCookies } from "react-cookie";
+import { CookieKey, getCookie } from "utils/cookie";
+import { PostCommentRequestDTO } from "apis/request/board";
 
 export default function BoardDetail() {
   const cx = classNames.bind(styles);
@@ -33,6 +41,8 @@ export default function BoardDetail() {
   const { boardNumber } = useParams();
   //const 로그인 유저 상태
   const { loginUser } = useLoginUserStore();
+  // const// 쿠키 상태
+  // const// [cookies, setCookie, removeCookie] = useCookies();
 
   //hook 네비게이터
   const navigator = useNavigate();
@@ -73,9 +83,18 @@ export default function BoardDetail() {
     };
     //handler "삭제" 버튼 클릭 이벤트
     const onDeleteButtonClickHandler = () => {
-      if (null === board || !loginUser) return;
+      if (
+        !boardNumber ||
+        !board ||
+        !loginUser ||
+        !getCookie(CookieKey.ACCESS_TOKEN)
+      )
+        return;
       if (loginUser.email !== board.writerEmail) return;
-      navigator(BOARD_PATH());
+
+      deleteBoardRequest(boardNumber, getCookie(CookieKey.ACCESS_TOKEN)).then(
+        deleteBoardResponseFunc
+      );
     };
 
     //function 게시물 API로 부터 응답처리
@@ -106,6 +125,23 @@ export default function BoardDetail() {
       if (!board) return null;
       const date = dayjs(board.writeDatetime);
       return date.format("YYYY. MM. DD");
+    };
+    //function '게시물' 삭제 응답 함수
+    const deleteBoardResponseFunc = (
+      res: DeleteBoardResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "VF") alert("잘못된 접근입니다.");
+      if (code === "NU") alert("존재하지 않는 유저입니다.");
+      if (code === "NB") alert("존재하지 않는 게시물입니다.");
+      if (code === "AF") alert("인증에 실패했습니다.");
+      if (code === "NP") alert("권한이 없습니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") return;
+
+      navigator(MAIN_PATH());
     };
 
     //comment 게시물 정보가 없으면 빈화면 출력
@@ -207,7 +243,15 @@ export default function BoardDetail() {
 
     //handler '좋아요' 클릭 이벤트
     const onFavoriteClickHandler = () => {
-      setFavorite(!isFavorite);
+      if (
+        !boardNumber ||
+        null === loginUser ||
+        !getCookie(CookieKey.ACCESS_TOKEN)
+      )
+        return;
+      putFavoriteRequest(boardNumber, getCookie(CookieKey.ACCESS_TOKEN)).then(
+        putFavoriteResponse
+      );
     };
     //handler '좋아요' 보기 클릭 이벤트
     const onShowFavoriteClickHandler = () => {
@@ -229,8 +273,20 @@ export default function BoardDetail() {
     };
     //handler '댓글달기' 클릭 이벤트
     const onCommentSubmitClickHandler = () => {
-      if (comment.length === 0) return;
-      alert("!!");
+      if (
+        !boardNumber ||
+        comment.length === 0 ||
+        !loginUser ||
+        !getCookie(CookieKey.ACCESS_TOKEN)
+      )
+        return;
+
+      const req: PostCommentRequestDTO = { content: comment };
+      postCommentRequest(
+        boardNumber,
+        req,
+        getCookie(CookieKey.ACCESS_TOKEN)
+      ).then(postCommentResponseFunc);
     };
 
     //function "좋아요" 응답 함수
@@ -257,10 +313,11 @@ export default function BoardDetail() {
       setFavorite(hitedFavorite);
     };
     //function "댓글" 응답 함수
-    const getCommentResponse = (
+    const getCommentListResponse = (
       res: GetCommentListResponseDTO | ResponseDTO | null
     ) => {
       if (!res) return;
+
       const { code } = res;
       if (code === "NB") alert("존재하지 않는 게시물입니다.");
       if (code === "DBE") alert("데이터베이스 입니다.");
@@ -268,6 +325,42 @@ export default function BoardDetail() {
 
       const { commentList } = res as GetCommentListResponseDTO;
       setCommentList(commentList);
+    };
+    //function "좋아요" 히팅 응답 합수
+    const putFavoriteResponse = (
+      res: PutFavoriteResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "VF") alert("잘못된 접근입니다.");
+      if (code === "NU") alert("존재하지 않는 유저입니다.");
+      if (code === "NB") alert("존재하지 않는 게시물입니다.");
+      if (code === "AF") alert("인증에 실패했습니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") return;
+
+      if (!boardNumber) return;
+      getFavoriteListRequest(boardNumber).then(getFavoriteResponse);
+    };
+    //function "댓글달기" 응답 함수
+    const postCommentResponseFunc = (
+      res: PostCommentResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "VF") alert("잘못된 접근입니다.");
+      if (code === "NU") alert("존재하지 않는 유저입니다.");
+      if (code === "NB") alert("존재하지 않는 게시물입니다.");
+      if (code === "AF") alert("인증에 실패했습니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") return;
+
+      setComment("");
+
+      if (!boardNumber) return;
+      getCommentListRequest(boardNumber).then(getCommentListResponse);
     };
 
     //hook 댓글 textarea 참조
@@ -277,7 +370,7 @@ export default function BoardDetail() {
     useEffect(() => {
       if (!boardNumber) return;
       getFavoriteListRequest(boardNumber).then(getFavoriteResponse);
-      getCommentListRequest(boardNumber).then(getCommentResponse);
+      getCommentListRequest(boardNumber).then(getCommentListResponse);
     }, []);
 
     //"좋아요" 펼치기 아이콘

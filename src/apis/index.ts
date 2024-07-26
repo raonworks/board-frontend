@@ -3,15 +3,19 @@ import { SignInRequestDTO, SignUpRequestDTO } from "./request/auth";
 import { SignInResponseDTO, SignUpResponseDTO } from "./response/auth";
 import { ResponseDTO } from "./response";
 import { GetSignInUserResponseDTO } from "./response/user";
-import { PostBoardRequestDTO } from "./request/board";
+import { PostBoardRequestDTO, PostCommentRequestDTO } from "./request/board";
 import {
+  DeleteBoardResponseDTO,
   GetBoardResponseDTO,
   GetCommentListResponseDTO,
   GetFavoriteListResponseDTO,
   IncreaseViewCountResponseDTO,
   PostBoardResponseDTO,
+  PostCommentResponseDTO,
+  PutFavoriteResponseDTO,
 } from "./response/board";
 import { error } from "console";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 const DOMAIN = "http://localhost:8080";
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -103,6 +107,12 @@ const GET_FAVORITE_LIST_URL = (boardNumber: number | string) =>
   `${API_DOMAIN}/board/${boardNumber}/favorite-list`;
 const GET_COMMENT_LIST_URL = (boardNumber: number | string) =>
   `${API_DOMAIN}/board/${boardNumber}/comment-list`;
+const PUT_FAVFORITE_URL = (boardNumber: number | string) =>
+  `${API_DOMAIN}/board/${boardNumber}/favorite`;
+const POST_COMMENT_URL = (boardNumber: number | string) =>
+  `${API_DOMAIN}/board/${boardNumber}/comment`;
+const DELETE_BOARD_URL = (boardNumber: number | string) =>
+  `${API_DOMAIN}/board/${boardNumber}`;
 
 export const postBoardRequest = async (
   req: PostBoardRequestDTO,
@@ -178,5 +188,63 @@ export const getCommentListRequest = async (boardNumber: number | string) => {
       if (!error.response) return null;
       return error.response.data as ResponseDTO;
     });
+  return result;
+};
+
+//* "좋아요" 히팅
+export const putFavoriteRequest = async (
+  boardNumber: number | string,
+  accessToken: string
+) => {
+  const result = await axios
+    .put(PUT_FAVFORITE_URL(boardNumber), {}, authorization(accessToken))
+    .then((res) => {
+      const body: PutFavoriteResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+//* "댓글" 달기
+export const postCommentRequest = async (
+  boardNumber: number | string,
+  req: PostCommentRequestDTO,
+  accessToken: string
+) => {
+  const result = await axios
+    .post(POST_COMMENT_URL(boardNumber), req, authorization(accessToken))
+    .then((res) => {
+      const body: PostCommentResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+//* "게시물" 삭제
+export const deleteBoardRequest = async (
+  boardNumber: number | string,
+  accessToken: string
+) => {
+  const result = await axios
+    .delete(DELETE_BOARD_URL(boardNumber), authorization(accessToken))
+    .then((res) => {
+      const body: DeleteBoardResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
   return result;
 };
