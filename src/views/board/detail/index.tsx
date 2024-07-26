@@ -8,19 +8,33 @@ import Pagination from "components/pagination";
 import EmptyProfileImage from "assets/images/empty_profile.jpg";
 import { useLoginUserStore } from "stores";
 import { useNavigate, useParams } from "react-router-dom";
-import { BOARD_PATH, BOARD_UPDATE_PATH, USER_PATH } from "contants";
+import { BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from "contants";
 import classNames from "classnames/bind";
+import { getBoardRequest, increaseViewCountRequst } from "apis";
+import GetBoardResponseDTO from "apis/response/board/get-board.response.dto";
+import { ResponseDTO } from "apis/response";
+import { IncreaseViewCountResponseDTO } from "apis/response/board";
 
 export default function BoardDetail() {
   const cx = classNames.bind(styles);
 
   //const 게시물 번호
-  const { boardNumner } = useParams();
+  const { boardNumber } = useParams();
   //const 로그인 유저 상태
   const { loginUser } = useLoginUserStore();
 
-  //function 네비게이터
+  //hook 네비게이터
   const navigator = useNavigate();
+
+  //function
+  const increaseViewCountResponse = (
+    res: IncreaseViewCountResponseDTO | ResponseDTO | null | undefined
+  ) => {
+    if (!res) return;
+    const { code } = res;
+    if (code === "NB") alert("존재하지 않는 게시물입니다.");
+    if (code === "DBE") alert("데이터베이스 오류입니다.");
+  };
 
   //# 게시물 상세 상단 컴포넌트
   const BoardDetailTop = () => {
@@ -28,6 +42,8 @@ export default function BoardDetail() {
     const [board, setBoard] = useState<Board | null>(null);
     //const "더보기" 버튼 상태
     const [showMore, setShowMore] = useState<boolean>(false);
+    //const 작성자 상태
+    const [isWriter, setWriter] = useState<boolean>(false);
 
     //handler "닉네임" 버튼 클릭 이벤트
     const onNicknameClickHandler = () => {
@@ -51,12 +67,40 @@ export default function BoardDetail() {
       navigator(BOARD_PATH());
     };
 
+    //function 게시물 API로 부터 응답처리
+    const getBoardResponse = (
+      resBody: GetBoardResponseDTO | ResponseDTO | undefined
+    ) => {
+      if (!resBody) return;
+      const { code } = resBody;
+      if (code === "NB") alert("존재하지 않는 게시물입니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") {
+        navigator(MAIN_PATH());
+        return;
+      }
+
+      const board: Board = { ...(resBody as GetBoardResponseDTO) };
+      setBoard(board);
+
+      if (!loginUser) {
+        setWriter(false);
+        return;
+      }
+
+      setWriter(loginUser.email === board.writerEmail);
+    };
+
     //comment 게시물 정보가 없으면 빈화면 출력
     // if (null === board) return <></>;
 
     useEffect(() => {
-      setBoard(boardMock);
-    }, [boardNumner]);
+      if (!boardNumber) {
+        navigator(MAIN_PATH());
+        return;
+      }
+      getBoardRequest(boardNumber).then(getBoardResponse);
+    }, []);
 
     return (
       <div className={cx("top")}>
@@ -90,9 +134,11 @@ export default function BoardDetail() {
                 {board?.writeDatetime}
               </div>
             </div>
-            <div className="icon-button" onClick={onMoreButtonClickHandler}>
-              <div className="icon more-icon"></div>
-            </div>
+            {isWriter && (
+              <div className="icon-button" onClick={onMoreButtonClickHandler}>
+                <div className="icon more-icon"></div>
+              </div>
+            )}
             {showMore && (
               <>
                 {/* //div 더보기 박스 */}
@@ -286,6 +332,21 @@ export default function BoardDetail() {
       </div>
     );
   };
+
+  //hook 게시물 조회 수 증가
+  //comment strict 모드에서는 effect가 2번 호출되기 때문에 한 번 걸러주기 위해서
+  //comment 다만, 배포모드에서는 strict가 제거된다.
+  let effectFlag = true;
+  useEffect(() => {
+    if (!boardNumber) return;
+
+    if (effectFlag) {
+      effectFlag = false;
+      return;
+    }
+
+    increaseViewCountRequst(boardNumber).then(increaseViewCountResponse);
+  }, []);
 
   return (
     <>

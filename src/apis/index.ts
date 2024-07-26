@@ -4,7 +4,12 @@ import { SignInResponseDTO, SignUpResponseDTO } from "./response/auth";
 import { ResponseDTO } from "./response";
 import { GetSignInUserResponseDTO } from "./response/user";
 import { PostBoardRequestDTO } from "./request/board";
-import { PostBoardResponseDTO } from "./response/board";
+import {
+  GetBoardResponseDTO,
+  IncreaseViewCountResponseDTO,
+  PostBoardResponseDTO,
+} from "./response/board";
+import { error } from "console";
 
 const DOMAIN = "http://localhost:8080";
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -87,7 +92,12 @@ export const fileUploadRequest = async (data: FormData) => {
   return result;
 };
 
+const GET_BOARD_URL = (boardNum: number | string) =>
+  `${API_DOMAIN}/board/${boardNum}`;
 const POST_BOARD_URL = () => `${API_DOMAIN}/board`;
+const INCREASE_VIEW_COUNT = (boardNumber: number | string) =>
+  `${API_DOMAIN}/board/${boardNumber}/increase-view-count`;
+
 export const postBoardRequest = async (
   req: PostBoardRequestDTO,
   accessToken: string
@@ -103,5 +113,35 @@ export const postBoardRequest = async (
       const resBody: ResponseDTO = error.response.data;
       return resBody;
     });
+  return result;
+};
+
+export const getBoardRequest = async (boardNum: number | string) => {
+  const result = await axios
+    .get(GET_BOARD_URL(boardNum))
+    .then((res) => {
+      const resBody: GetBoardResponseDTO = res.data;
+      return resBody;
+    })
+    .catch((error) => {
+      if (!error.response) return;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+export const increaseViewCountRequst = async (boardNumber: number | string) => {
+  const result = await axios
+    .get(INCREASE_VIEW_COUNT(boardNumber))
+    .then((res) => {
+      const body: IncreaseViewCountResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return;
+      return error.response.data as ResponseDTO;
+    });
+
   return result;
 };
