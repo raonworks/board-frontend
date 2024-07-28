@@ -87,22 +87,6 @@
   background-image: url(assets/images/close.png);
 }
 
-.board-write-images-box {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.board-write-image-box {
-  position: relative;
-  width: 100%;
-}
-
-.board-write-image {
-  width: 100%;
-}
-
 .image-close {
   position: absolute;
   top: 20px;

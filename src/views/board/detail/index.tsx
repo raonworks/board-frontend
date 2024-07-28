@@ -100,7 +100,7 @@ export default function BoardDetail() {
 
     //function 게시물 API로 부터 응답처리
     const getBoardResponse = (
-      resBody: GetBoardResponseDTO | ResponseDTO | undefined
+      resBody: GetBoardResponseDTO | ResponseDTO | null
     ) => {
       if (!resBody) return;
       const { code } = resBody;

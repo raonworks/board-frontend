@@ -1,28 +1,28 @@
-.board-write-wrapper {
+.wrapper {
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.board-write-container {
+.container {
   padding: 100px 24px;
   width: 700px;
   min-height: 1200px;
   background-color: white;
 }
 
-.board-write-box {
+.box {
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
 
-.board-write-title-box {
+.title-box {
   width: 100%;
 }
 
-.board-write-title-textarea {
+.title-textarea {
   width: 100%;
   border: none;
   outline: none;
@@ -35,13 +35,13 @@
   line-height: 140%;
 }
 
-.board-write-content-box {
+.content-box {
   width: 100%;
   display: flex;
   gap: 16px;
 }
 
-.board-write-content-textarea {
+.content-textarea {
   border: none;
   outline: none;
   background: none;
@@ -53,18 +53,18 @@
   line-height: 150%;
 }
 
-.board-write-images-box {
+.images-box {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.board-write-image-box {
+.image-box {
   position: relative;
   width: 100%;
 }
 
-.board-write-image {
+.image {
   width: 100%;
 }
