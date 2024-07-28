@@ -12,6 +12,15 @@
   justify-content: center;
 }
 
+.icon-box-small {
+  width: 16px;
+  height: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .icon-button {
   border-radius: 50% 50%;
   width: 24px;
@@ -119,6 +128,14 @@
 
 .down-light-icon {
   background-image: url(assets/images/arrow_down.png);
+}
+
+.left-light-icon {
+  background-image: url(assets/images/arrow-left.png);
+}
+
+.right-light-icon {
+  background-image: url(assets/images/arrow-right.png);
 }
 
 .comment-icon {

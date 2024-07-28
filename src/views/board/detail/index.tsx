@@ -33,6 +33,7 @@ import _ from "lodash";
 //// import { useCookies } from "react-cookie";
 import { CookieKey, getCookie } from "utils/cookie";
 import { PostCommentRequestDTO } from "apis/request/board";
+import { usePagination } from "hooks";
 
 export default function BoardDetail() {
   const cx = classNames.bind(styles);
@@ -230,8 +231,6 @@ export default function BoardDetail() {
   const BoardDetailBottom = () => {
     //const '좋아요' 리스트 상태 관리
     const [favoriteList, setFavoriteList] = useState<FavoriteLiteItem[]>([]);
-    //const '댓글' 리스트 상태 관리
-    const [commentList, setCommentList] = useState<CommentListItem[]>([]);
     //const '좋아요' 상태 관리
     const [isFavorite, setFavorite] = useState<boolean>(false);
     //const '좋아요' 보기 상태 관리
@@ -240,6 +239,8 @@ export default function BoardDetail() {
     const [showComment, setShowComment] = useState<boolean>(false);
     //const '댓글' 상태 관리
     const [comment, setComment] = useState<string>("");
+    //const '댓글' 전체 개수 상태
+    const [totalCommentCount, setTotalCommentCount] = useState<number>(0);
 
     //handler '좋아요' 클릭 이벤트
     const onFavoriteClickHandler = () => {
@@ -324,7 +325,8 @@ export default function BoardDetail() {
       if (code !== "SU") return;
 
       const { commentList } = res as GetCommentListResponseDTO;
-      setCommentList(commentList);
+      setTotalList(commentList);
+      setTotalCommentCount(commentList.length);
     };
     //function "좋아요" 히팅 응답 합수
     const putFavoriteResponse = (
@@ -362,6 +364,18 @@ export default function BoardDetail() {
       if (!boardNumber) return;
       getCommentListRequest(boardNumber).then(getCommentListResponse);
     };
+
+    //hook 페이지네이션(사용자 정의)
+    const {
+      currentPage,
+      currentSection,
+      totalSection,
+      viewList,
+      viewPageList,
+      setCurrentPage,
+      setCurrentSection,
+      setTotalList,
+    } = usePagination<CommentListItem>(3);
 
     //hook 댓글 textarea 참조
     const commentRef = useRef<HTMLTextAreaElement | null>(null);
@@ -415,7 +429,7 @@ export default function BoardDetail() {
               <div className="icon comment-icon"></div>
             </div>
             <div className={cx("bottom-button-text")}>
-              댓글 {commentList.length}
+              댓글 {totalCommentCount}
             </div>
             <div className="icon-button" onClick={onShowCommentClickHandler}>
               <div className={commentIcon}></div>
@@ -442,10 +456,10 @@ export default function BoardDetail() {
           <div className={cx("bottom-comment-box")}>
             <div className={cx("bottom-comment-container")}>
               <div className={cx("bottom-comment-title")}>
-                댓글 <span className="emphasis">{commentList.length}</span>
+                댓글 <span className="emphasis">{totalCommentCount}</span>
               </div>
               <div className={cx("bottom-comment-list-container")}>
-                {commentList.map((item, idx) => (
+                {viewList.map((item, idx) => (
                   <CommentItem key={idx} commentItemList={item} />
                 ))}
               </div>
@@ -453,7 +467,14 @@ export default function BoardDetail() {
             <div className="divider"></div>
             {/* //div 페이지 네이션 박스 */}
             <div className={cx("bottom-comment-pagination-box")}>
-              <Pagination />
+              <Pagination
+                currentPage={currentPage}
+                currentSection={currentSection}
+                viewPageList={viewPageList}
+                totalSection={totalSection}
+                setCurrentPage={setCurrentPage}
+                setCurentSection={setCurrentSection}
+              />
             </div>
             {/* //div 댓글 입력 폼 */}
             {null != loginUser && (
