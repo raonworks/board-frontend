@@ -3,13 +3,18 @@ import { SignInRequestDTO, SignUpRequestDTO } from "./request/auth";
 import { SignInResponseDTO, SignUpResponseDTO } from "./response/auth";
 import { ResponseDTO } from "./response";
 import { GetSignInUserResponseDTO } from "./response/user";
-import { PostBoardRequestDTO, PostCommentRequestDTO } from "./request/board";
+import {
+  PatchBoardRequestDTO,
+  PostBoardRequestDTO,
+  PostCommentRequestDTO,
+} from "./request/board";
 import {
   DeleteBoardResponseDTO,
   GetBoardResponseDTO,
   GetCommentListResponseDTO,
   GetFavoriteListResponseDTO,
   IncreaseViewCountResponseDTO,
+  PatchBoardResponseDTO,
   PostBoardResponseDTO,
   PostCommentResponseDTO,
   PutFavoriteResponseDTO,
@@ -112,6 +117,8 @@ const PUT_FAVFORITE_URL = (boardNumber: number | string) =>
 const POST_COMMENT_URL = (boardNumber: number | string) =>
   `${API_DOMAIN}/board/${boardNumber}/comment`;
 const DELETE_BOARD_URL = (boardNumber: number | string) =>
+  `${API_DOMAIN}/board/${boardNumber}`;
+const PATCH_BOARD_URL = (boardNumber: number | string) =>
   `${API_DOMAIN}/board/${boardNumber}`;
 
 export const postBoardRequest = async (
@@ -239,6 +246,26 @@ export const deleteBoardRequest = async (
     .delete(DELETE_BOARD_URL(boardNumber), authorization(accessToken))
     .then((res) => {
       const body: DeleteBoardResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+//* "게시물" 수정
+export const patchBoardRequest = async (
+  boardNumber: number | string,
+  req: PatchBoardRequestDTO,
+  accessToken: string
+) => {
+  const result = await axios
+    .patch(PATCH_BOARD_URL(boardNumber), req, authorization(accessToken))
+    .then((res) => {
+      const body: PatchBoardResponseDTO = res.data;
       return body;
     })
     .catch((error) => {
