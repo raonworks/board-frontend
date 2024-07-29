@@ -13,6 +13,9 @@ import {
   GetBoardResponseDTO,
   GetCommentListResponseDTO,
   GetFavoriteListResponseDTO,
+  GetLatestBoardListResponseDTO,
+  GetPopularListResponseDTO,
+  GetTop3BoardListResponseDTO,
   IncreaseViewCountResponseDTO,
   PatchBoardResponseDTO,
   PostBoardResponseDTO,
@@ -120,6 +123,8 @@ const DELETE_BOARD_URL = (boardNumber: number | string) =>
   `${API_DOMAIN}/board/${boardNumber}`;
 const PATCH_BOARD_URL = (boardNumber: number | string) =>
   `${API_DOMAIN}/board/${boardNumber}`;
+const GET_LATEST_BOARD_LIST_URL = () => `${API_DOMAIN}/board/latest-list`;
+const GET_TOP_3_BOARD_LIST_URL = () => `${API_DOMAIN}/board/top-3`;
 
 export const postBoardRequest = async (
   req: PostBoardRequestDTO,
@@ -266,6 +271,50 @@ export const patchBoardRequest = async (
     .patch(PATCH_BOARD_URL(boardNumber), req, authorization(accessToken))
     .then((res) => {
       const body: PatchBoardResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+export const getLatestBoardListRequest = async () => {
+  const result = await axios(GET_LATEST_BOARD_LIST_URL())
+    .then((res) => {
+      const body: GetLatestBoardListResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+export const getTop3BoardListRequest = async () => {
+  const result = await axios(GET_TOP_3_BOARD_LIST_URL())
+    .then((res) => {
+      const body: GetTop3BoardListResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+const GET_POPULAR_LIST_URL = () => `${API_DOMAIN}/search/popular-list`;
+
+export const getPopularListRequest = async () => {
+  const result = await axios(GET_POPULAR_LIST_URL())
+    .then((res) => {
+      const body: GetPopularListResponseDTO = res.data;
       return body;
     })
     .catch((error) => {
