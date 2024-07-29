@@ -1,0 +1,96 @@
+.top-wrapper {
+  padding: 80px 0 40px;
+  display: flex;
+  justify-content: center;
+}
+.top-container {
+  width: 1200px;
+  min-width: 1200;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  align-items: center;
+}
+.top-title {
+  font-family: GimhaeGaya;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: 0.8px;
+  white-space: pre-wrap;
+  text-align: center;
+}
+.top-contents-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+.top-contents-title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.top-contents {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+.bottom-wrapper {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+}
+.bottom-container {
+  width: 1200px;
+  min-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.bottom-title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.bottom-contents-box {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 8fr 4fr;
+  gap: 24px;
+}
+.bottom-current-contents {
+  grid-column: 1/2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bottom-popular-box {
+  grid-column: 2/3;
+}
+.bottom-popular-card {
+  background-color: white;
+  padding: 24px;
+}
+.bottom-popular-card-conatainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.bottom-popular-card-title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.bottom-popular-card-contents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.bottom-pagination-box {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+}

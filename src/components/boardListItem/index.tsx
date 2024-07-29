@@ -2,6 +2,7 @@ import { BoardListItem } from "types/interface";
 import "./style.css";
 import { useNavigate } from "react-router-dom";
 import EmptyProfileImage from "assets/images/empty_profile.jpg";
+import { BOARD_DETAIL_PATH, BOARD_PATH } from "contants";
 
 interface PropsType {
   boardListItem: BoardListItem;
@@ -12,9 +13,9 @@ export default function BoardListItemFoo({ boardListItem }: PropsType) {
   const { favoriteCount, commentCount, viewCount } = boardListItem;
   const { writeDatetime, writeNickname, writeProfileImage } = boardListItem;
 
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
   const onClickHandler = () => {
-    // navigator(boardNumber);
+    navigator(BOARD_PATH() + "/" + BOARD_DETAIL_PATH(boardNumber));
   };
 
   return (
