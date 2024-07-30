@@ -10,6 +10,7 @@ import PatchBoardResponseDTO from "./patch-board.response.dto";
 import GetTop3BoardListResponseDTO from "./get-top-3-board-list.response.dto";
 import GetLatestBoardListResponseDTO from "./get-latest-board-list.response.dto";
 import GetPopularListResponseDTO from "../search/get-popular-list.response.dto";
+import GetSearchBoardListResponseDTO from "./get-search-board-list.reponse.dto";
 
 export type {
   PostBoardResponseDTO,
@@ -24,4 +25,5 @@ export type {
   GetTop3BoardListResponseDTO,
   GetLatestBoardListResponseDTO,
   GetPopularListResponseDTO,
+  GetSearchBoardListResponseDTO,
 };
