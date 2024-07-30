@@ -74,7 +74,7 @@ function App() {
         <Route element={<Container />}>
           <Route path={MAIN_PATH()} element={<Main />} />
           <Route path={AUTH_PATH()} element={<Authentication />} />
-          <Route path={SEARCH_PATH(":word")} element={<Search />} />
+          <Route path={SEARCH_PATH(":searchWord")} element={<Search />} />
           <Route path={USER_PATH(":email")} element={<UserFoo />} />
           <Route path={BOARD_PATH()}>
             <Route path={BOARD_WRITE_PATH()} element={<BoardWrite />} />

@@ -1,0 +1,96 @@
+.wrapper {
+  min-height: 1080px;
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.container {
+  width: 1200px;
+  min-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.title-box {
+  display: flex;
+  gap: 8px;
+}
+.title {
+  color: rgba(0, 0, 0, 1);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 140%;
+}
+.title-emphasis {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.count {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.contents-box {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 8fr 4fr;
+  gap: 24px;
+}
+.contents {
+  grid-column: 1/2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.contents-nothing {
+  margin-top: 82px;
+  height: 310px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.relation-box {
+  grid-column: 2/3;
+}
+.relation-card {
+  background-color: white;
+  padding: 24px;
+}
+.relation-card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.relation-card-title {
+  color: rgba(0, 0, 0, 1);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.relation-card-contents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.relation-card-contents-nothing {
+  height: 310px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 140%;
+}
+.pagination-box {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+}
