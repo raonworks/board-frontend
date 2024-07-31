@@ -2,7 +2,12 @@ import axios from "axios";
 import { SignInRequestDTO, SignUpRequestDTO } from "./request/auth";
 import { SignInResponseDTO, SignUpResponseDTO } from "./response/auth";
 import { ResponseDTO } from "./response";
-import { GetSignInUserResponseDTO } from "./response/user";
+import {
+  GetSignInUserResponseDTO,
+  GetUserResponseDTO,
+  PatchNicknameResponseDTO,
+  PatchProfileImageResponseDTO,
+} from "./response/user";
 import {
   PatchBoardRequestDTO,
   PostBoardRequestDTO,
@@ -17,6 +22,7 @@ import {
   GetPopularListResponseDTO,
   GetSearchBoardListResponseDTO,
   GetTop3BoardListResponseDTO,
+  GetUserBoardListResponseDTO,
   IncreaseViewCountResponseDTO,
   PatchBoardResponseDTO,
   PostBoardResponseDTO,
@@ -24,12 +30,69 @@ import {
   PutFavoriteResponseDTO,
 } from "./response/board";
 import { GetRelationListResponseDTO } from "./response/search";
+import {
+  PatchNicknameRequestDTO,
+  PatchProfileImageRequestDTO,
+} from "./request/user";
 
 const DOMAIN = "http://localhost:8080";
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
 const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
-const Get_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
+const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
+const GET_USER_URL = (email: string) => `${API_DOMAIN}/user/${email}`;
+const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
+const PATCH_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/profile-image`;
+
+export const getUserRequest = async (email: string) => {
+  const result = await axios(GET_USER_URL(email))
+    .then((res) => {
+      const body: GetUserResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+export const patchNicknameRequest = async (
+  req: PatchNicknameRequestDTO,
+  accessToken: string
+) => {
+  const result = await axios
+    .patch(PATCH_NICKNAME_URL(), req, authorization(accessToken))
+    .then((res) => {
+      const body: PatchNicknameResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+export const patchProfileImageRequest = async (
+  req: PatchProfileImageRequestDTO,
+  accessToken: string
+) => {
+  const result = await axios
+    .patch(PATCH_PROFILE_IMAGE_URL(), req, authorization(accessToken))
+    .then((res) => {
+      const body: PatchProfileImageResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
 
 //function 로그인 요청
 export const signInRequest = async (req: SignInRequestDTO) => {
@@ -75,7 +138,7 @@ const authorization = (accessToken: string) => {
 
 export const getSignInUserRequest = async (accessToken: string) => {
   const result = await axios
-    .get(Get_SIGN_IN_USER_URL(), authorization(accessToken))
+    .get(GET_SIGN_IN_USER_URL(), authorization(accessToken))
     .then((res) => {
       const resBody: GetSignInUserResponseDTO = res.data;
       return resBody;
@@ -132,6 +195,8 @@ const GET_SEARCH_BOARD_LIST_URL = (
   `${API_DOMAIN}/board/search-list/${searchWord}${
     preSearchWord ? "/" + preSearchWord : ""
   }`;
+const GET_USER_BOARD_LIST_URL = (email: string) =>
+  `${API_DOMAIN}/board/user-board-list/${email}`;
 
 export const postBoardRequest = async (
   req: PostBoardRequestDTO,
@@ -357,6 +422,20 @@ export const getRelationListRequest = async (searchWord: string) => {
   const result = await axios(GET_RELATION_LIST_URL(searchWord))
     .then((res) => {
       const body: GetRelationListResponseDTO = res.data;
+      return body;
+    })
+    .catch((error) => {
+      if (!error.response) return null;
+      return error.response.data as ResponseDTO;
+    });
+
+  return result;
+};
+
+export const getUserBoardListRequest = async (email: string) => {
+  const result = await axios(GET_USER_BOARD_LIST_URL(email))
+    .then((res) => {
+      const body: GetUserBoardListResponseDTO = res.data;
       return body;
     })
     .catch((error) => {

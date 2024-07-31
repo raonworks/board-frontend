@@ -4,11 +4,31 @@ import classNames from "classnames/bind";
 import { BoardListItem, User } from "types/interface";
 import emptyProfileImage from "assets/images/empty_profile.jpg";
 import { useNavigate, useParams } from "react-router-dom";
-import { idText } from "typescript";
 import { latestBoardListMock } from "mocks";
 import BoardListItemFoo from "components/boardListItem";
-import { BOARD_PATH, BOARD_WRITE_PATH, USER_PATH } from "contants";
+import { BOARD_PATH, BOARD_WRITE_PATH, MAIN_PATH, USER_PATH } from "contants";
 import { useLoginUserStore } from "stores";
+import {
+  fileUploadRequest,
+  getUserBoardListRequest,
+  getUserRequest,
+  patchNicknameRequest,
+  patchProfileImageRequest,
+} from "apis";
+import {
+  GetUserResponseDTO,
+  PatchNicknameResponseDTO,
+  PatchProfileImageResponseDTO,
+} from "apis/response/user";
+import { ResponseDTO } from "apis/response";
+import {
+  PatchNicknameRequestDTO,
+  PatchProfileImageRequestDTO,
+} from "apis/request/user";
+import { CookieKey, getCookie } from "utils/cookie";
+import { usePagination } from "hooks";
+import { GetUserBoardListResponseDTO } from "apis/response/board";
+import Pagination from "components/pagination";
 
 export default function UserPage() {
   const cx = classNames.bind(styles);
@@ -39,6 +59,36 @@ export default function UserPage() {
     //state 유저 정보 상태
     const [user, setUser] = useState<User | null>(null);
 
+    //function 프로파일 등록 응답처리
+    const patchProfileImageResponse = (
+      res: PatchProfileImageResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "AF") alert("인증에 실패했습니다.");
+      if (code === "NU") alert("존재하지 않는 유저입니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") return;
+
+      //comment 사용자 정보를 다시 받아와서 화면을 갱신해준다.
+      if (!email) return;
+      getUserRequest(email).then(getUserResponse);
+    };
+
+    //function 파일 업로드 응답처리
+    const fileUploadResponse = (profileImage: string | null) => {
+      console.log(profileImage);
+      if (!profileImage) return;
+      if (!getCookie(CookieKey.ACCESS_TOKEN)) return;
+
+      //comment 파일 등록 후 유저 정보를 업데이트 해준다.
+      const req: PatchProfileImageRequestDTO = { profileImage };
+      patchProfileImageRequest(req, getCookie(CookieKey.ACCESS_TOKEN)).then(
+        patchProfileImageResponse
+      );
+    };
+
     //handler 프로파일 이미지 클릭 이벤트
     const onProfileBoxClickHandler = () => {
       if (!isMyPage) return;
@@ -52,26 +102,82 @@ export default function UserPage() {
       const file = e.target.files[0];
       const data = new FormData();
       data.append("file", file);
+
+      fileUploadRequest(data).then(fileUploadResponse);
     };
     //handler 닉네임 수정 버튼 클릭 이벤트
     const onEditNicknameButtonClickHandler = () => {
-      setIsChangeNickname(!isChangeNickname);
-      setChangeNickname(nickname);
+      if (!isChangeNickname) {
+        setIsChangeNickname(!isChangeNickname);
+        setChangeNickname(nickname);
+        return;
+      }
+
+      if (!getCookie(CookieKey.ACCESS_TOKEN)) return;
+
+      const req: PatchNicknameRequestDTO = {
+        nickname: changeNickname,
+      };
+
+      patchNicknameRequest(req, getCookie(CookieKey.ACCESS_TOKEN)).then(
+        patchNicknameResponse
+      );
     };
-    //handler
+    //handler 닉네임 변경 이벤트 처리
     const onNicknameChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       setChangeNickname(value);
+    };
+
+    //function 닉네임 수정 요청 후 응답 처리
+    const patchNicknameResponse = (
+      res: PatchNicknameResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "VF") alert("닉네임은 필수입니다.");
+      if (code === "NU") alert("존재하지 않는 유저입니다.");
+      if (code === "DN") alert("중복되는 닉네임입니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") return;
+
+      if (!email) return;
+      //comment 사용자 정보를 다시 받아와서 화면을 갱신해준다.
+      getUserRequest(email).then(getUserResponse);
+      setIsChangeNickname(false);
+    };
+
+    //function 유저 정보 요청 후 응답 처리
+    const getUserResponse = (res: GetUserResponseDTO | ResponseDTO | null) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "NU") alert("존재하지 않는 유저입니다.");
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") {
+        navigator(MAIN_PATH());
+        return;
+      }
+
+      const { email, nickname, profileImage } = res as GetUserResponseDTO;
+      setNickname(nickname);
+      setProfileImage(profileImage);
+
+      const isMyPage = email === loginUser?.email;
+      setIsMyPage(isMyPage);
     };
 
     //hook 마운트 초기화
     useEffect(() => {
       if (!email) return;
 
-      setNickname("개발자");
-      setProfileImage(
-        "https://cdn.pixabay.com/photo/2024/04/26/09/11/picture-8721442_640.jpg"
-      );
+      getUserRequest(email).then(getUserResponse);
+
+      // setNickname("개발자");
+      // setProfileImage(
+      //   "https://cdn.pixabay.com/photo/2024/04/26/09/11/picture-8721442_640.jpg"
+      // );
     }, []);
 
     //# UI 렌더링
@@ -154,6 +260,18 @@ export default function UserPage() {
 
   //# 유저 하단 컴포넌트
   const UserBottom = () => {
+    //hook 페이지네이션 관리
+    const {
+      currentPage,
+      currentSection,
+      totalSection,
+      viewList,
+      viewPageList,
+      setCurrentPage,
+      setCurrentSection,
+      setTotalList,
+    } = usePagination<BoardListItem>(5);
+
     //state 게시물 갯수 상태
     const [count, setCount] = useState<number>(2);
     //state 게시물 상태(임시)
@@ -165,9 +283,31 @@ export default function UserPage() {
       else if (loginUser) navigator(USER_PATH(loginUser.email));
     };
 
+    //function 유저의 게시물 정보를 가져오는 응답 함수
+    const getUserBoardListResponse = (
+      res: GetUserBoardListResponseDTO | ResponseDTO | null
+    ) => {
+      if (!res) return;
+
+      const { code } = res;
+      if (code === "NU") {
+        alert("존재하지 않는 유저입니다.");
+        navigator(MAIN_PATH());
+        return;
+      }
+      if (code === "DBE") alert("데이터베이스 오류입니다.");
+      if (code !== "SU") return;
+
+      const { userBoardList } = res as GetUserBoardListResponseDTO;
+      setTotalList(userBoardList);
+      setCount(userBoardList.length);
+    };
+
     //hook 마운트 초기화
     useEffect(() => {
-      setBoardList(latestBoardListMock);
+      if (!email) return;
+
+      getUserBoardListRequest(email).then(getUserBoardListResponse);
     }, []);
 
     return (
@@ -186,7 +326,7 @@ export default function UserPage() {
             ) : (
               //comment 게시물이 있으면
               <div className={cx("bottom-content")}>
-                {boardList.map((item, idx) => (
+                {viewList.map((item, idx) => (
                   <BoardListItemFoo key={idx} boardListItem={item} />
                 ))}
               </div>
@@ -215,7 +355,18 @@ export default function UserPage() {
               </div>
             </div>
           </div>
-          <div className={cx("bottom-pagination-box")}></div>
+          <div className={cx("bottom-pagination-box")}>
+            {0 !== count && (
+              <Pagination
+                currentPage={currentPage}
+                currentSection={currentSection}
+                totalSection={totalSection}
+                viewPageList={viewPageList}
+                setCurentSection={setCurrentSection}
+                setCurrentPage={setCurrentPage}
+              />
+            )}
+          </div>
         </div>
       </div>
     );
