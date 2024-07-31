@@ -23,8 +23,6 @@ import {
   PostCommentResponseDTO,
   PutFavoriteResponseDTO,
 } from "./response/board";
-import { error } from "console";
-import { wait } from "@testing-library/user-event/dist/utils";
 import { GetRelationListResponseDTO } from "./response/search";
 
 const DOMAIN = "http://localhost:8080";
